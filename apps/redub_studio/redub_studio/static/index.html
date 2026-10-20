@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>映声 · 口播工作台</title>
+  <link rel="stylesheet" href="./static/styles.css?v=hd-20261020-1">
+  <script src="./static/app.js?v=hd-20261020-1" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="映声首页"><span class="brand-mark" aria-hidden="true">映</span><span>映声<span class="brand-en">REDUB STUDIO</span></span></a>
+    <div class="header-right"><span class="local-label"><span class="tiny-dot"></span> 自部署口播工作台</span><button id="health-refresh" class="health-pill" type="button"><span id="health-dot" class="status-dot"></span><span id="health-label">正在连接服务</span><span class="refresh-icon" aria-hidden="true">↻</span></button></div>
+  </header>
+
+  <main class="page-shell">
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">YOUR WORDS. YOUR VOICE. YOUR PRESENCE.</p><h1 id="page-title">把内容，变成你的自然表达<span class="title-dot">。</span></h1><p class="intro-copy">用原视频的口播节奏，搭配你的声音和出镜画面，完成一条新的口播视频。</p></div>
+      <div class="intro-note"><span class="intro-number">01 — 05</span><span>从素材到成片<br>音频可预听，过程可追溯</span></div>
+    </section>
+
+    <nav class="workflow" aria-label="制作流程">
+      <div class="workflow-step" data-step="1"><span class="step-number">01</span><div><strong>提取口播</strong><span>上传内容来源视频</span></div></div>
+      <div class="workflow-step" data-step="2"><span class="step-number">02</span><div><strong>准备声音</strong><span>提供你的音色参考</span></div></div>
+      <div class="workflow-step" data-step="3"><span class="step-number">03</span><div><strong>转换音色</strong><span>保留节奏，生成配音</span></div></div>
+      <div class="workflow-step" data-step="4"><span class="step-number">04</span><div><strong>驱动口型</strong><span>自动分段处理画面</span></div></div>
+      <div class="workflow-step" data-step="5"><span class="step-number">05</span><div><strong>预览成片</strong><span>检查并下载结果</span></div></div>
+    </nav>
+
+    <div id="service-notice" class="service-notice" role="status"><span class="notice-symbol" aria-hidden="true">i</span><span id="service-notice-text">正在检查 GPU、声音转换和视频处理环境。可以先准备素材。</span></div>
+
+    <div class="workspace-grid">
+      <div class="setup-column">
+        <section class="panel materials-panel" aria-labelledby="materials-title">
+          <div class="section-heading"><div><p class="eyebrow">MATERIALS</p><h2 id="materials-title">准备三份素材</h2></div><span class="section-caption">上传后自动检查时长与画面</span></div>
+          <div class="asset-grid">
+            <article class="asset-card" data-kind="source">
+              <div class="asset-top"><span class="asset-index">01</span><span class="required-label">必选</span></div><h3>原文案视频</h3><p class="asset-description">提取口播音频<br>保留原有说话节奏</p>
+              <label class="dropzone" for="source-file" tabindex="0"><span class="upload-symbol" aria-hidden="true">＋</span><strong class="drop-title">点击上传视频</strong><span class="drop-detail">或拖拽文件到这里</span><input type="file" id="source-file" data-upload="source" accept="video/mp4,video/quicktime,video/webm,video/x-matroska,.mp4,.mov,.mkv,.webm,.m4v" hidden></label>
+              <div class="upload-progress" hidden><span></span></div><p class="upload-status" aria-live="polite"></p><div class="asset-meta" hidden></div><div class="asset-local-preview" hidden></div><button class="replace-button" type="button" data-replace="source" hidden>更换素材 <span aria-hidden="true">↗</span></button>
+              <p class="asset-footnote">建议清晰人声 · 最长 10 分钟</p>
+            </article>
+            <article class="asset-card" data-kind="voice">
+              <div class="asset-top"><span class="asset-index">02</span><span class="required-label" id="voice-required">音色转换时必选</span></div><h3>本人声音参考</h3><p class="asset-description">让内容使用你的音色<br>无需照着原稿重新念</p>
+              <label class="dropzone" for="voice-file" tabindex="0"><span class="upload-symbol" aria-hidden="true">＋</span><strong class="drop-title">上传音频或视频</strong><span class="drop-detail">10–30 秒清楚讲话更合适</span><input type="file" id="voice-file" data-upload="voice" accept="audio/*,video/mp4,video/quicktime,video/webm,.wav,.mp3,.m4a,.aac,.flac,.ogg,.mp4,.mov,.mkv,.webm,.m4v" hidden></label>
+              <div class="upload-progress" hidden><span></span></div><p class="upload-status" aria-live="polite"></p><div class="asset-meta" hidden></div><div class="asset-local-preview" hidden></div><button class="replace-button" type="button" data-replace="voice" hidden>更换素材 <span aria-hidden="true">↗</span></button>
+              <p class="asset-footnote">安静环境 · 少混响 · 无背景音乐</p>
+            </article>
+            <article class="asset-card" data-kind="portrait">
+              <div class="asset-top"><span class="asset-index">03</span><span class="required-label">必选</span></div><h3>本人动作视频</h3><p class="asset-description">提供表情、动作与出镜画面<br>生成匹配配音的口型</p>
+              <label class="dropzone" for="portrait-file" tabindex="0"><span class="upload-symbol" aria-hidden="true">＋</span><strong class="drop-title">点击上传视频</strong><span class="drop-detail">正面或小角度，面部无遮挡</span><input type="file" id="portrait-file" data-upload="portrait" accept="video/mp4,video/quicktime,video/webm,video/x-matroska,.mp4,.mov,.mkv,.webm,.m4v" hidden></label>
+              <div class="upload-progress" hidden><span></span></div><p class="upload-status" aria-live="polite"></p><div class="asset-meta" hidden></div><div class="asset-local-preview" hidden></div><button class="replace-button" type="button" data-replace="portrait" hidden>更换素材 <span aria-hidden="true">↗</span></button>
+              <p class="asset-footnote">时长应不短于原文案视频</p>
+            </article>
+          </div>
+          <div id="duration-notice" class="duration-notice" hidden role="status"></div>
+        </section>
+
+        <section class="panel options-panel" aria-labelledby="options-title">
+          <div class="section-heading"><div><p class="eyebrow">GENERATION</p><h2 id="options-title">生成设置</h2></div><span class="chunk-badge">自动分段 <strong id="chunk-label">15 秒</strong></span></div>
+          <label class="option-row"><div><strong>使用本人音色</strong><span>转换原口播的人声音色，尽量保持原有节奏</span></div><input id="voice-conversion" type="checkbox" checked><span class="switch" aria-hidden="true"></span></label>
+          <label class="option-row"><div><strong>保留原视频背景音</strong><span id="background-description">先分离人声，再将背景音乐回混到新配音</span></div><input id="keep-background" type="checkbox"><span class="switch" aria-hidden="true"></span></label>
+          <label class="option-row"><div><strong>允许轻微调整动作视频时长</strong><span>仅接受最多约 3% 的微调；明显过短不会循环补帧</span></div><input id="fit-video" type="checkbox" checked><span class="switch" aria-hidden="true"></span></label>
+          <label class="option-row"><div><strong>AI 高清增强（最高1080P）</strong><span id="enhance-description">保留原比例，不做额外人脸重绘；同时保留原版供对比</span></div><input id="enhance-video" type="checkbox"><span class="switch" aria-hidden="true"></span></label>
+          <div class="start-area"><div id="validation-message" class="validation-message" aria-live="polite">准备好原文案视频和本人动作视频后即可开始。</div><button id="start-button" class="primary-button" type="button" disabled><span id="start-label">开始制作</span><span aria-hidden="true">↗</span></button><p class="generation-note">仅在模型就绪时启动 · 同一时间处理一个任务 · 可随时取消</p></div>
+        </section>
+
+        <details class="recording-tips"><summary><span class="tip-symbol" aria-hidden="true">✦</span> 怎样录出更自然的参考素材？<span class="details-chevron" aria-hidden="true">＋</span></summary><div class="tips-content"><p><strong>声音：</strong>录制 10–30 秒自然说话，声音清楚，尽量避免音乐、混响和其他人声。</p><p><strong>画面：</strong>面部清楚、光线稳定，保持自然眨眼和轻微动作。动作素材尽量录得比目标口播长一些，避免重复循环。</p><p><strong>内容：</strong>先用 10–15 秒片段检查音色和嘴形，再制作长视频。请使用本人或已获授权的素材。</p></div></details>
+      </div>
+
+      <aside class="result-column">
+        <section class="panel task-panel" aria-labelledby="task-title">
+          <div class="section-heading"><div><p class="eyebrow">WORKSPACE</p><h2 id="task-title">制作进度</h2></div><span id="job-status" class="status-badge neutral">等待素材</span></div>
+          <div class="progress-heading"><span id="stage-label">准备开始</span><span id="progress-value">—</span></div><div class="task-progress" role="progressbar" aria-label="任务进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="task-progress-bar"></span></div><p id="job-message" class="job-message">生成开始后，这里会显示真实处理进度。</p><div id="job-id-row" class="job-id-row" hidden><span id="job-id"></span><button id="retry-button" class="text-button" type="button" hidden>继续处理 ↗</button><button id="cancel-button" class="text-button danger" type="button" hidden>取消任务</button></div><div id="job-error" class="error-box" hidden role="alert"></div>
+          <div class="stage-checklist"><div data-stage-row="extract"><span class="stage-state"></span><span>提取原口播音频</span></div><div data-stage-row="voice"><span class="stage-state"></span><span>生成目标音色配音</span></div><div data-stage-row="lipsync"><span class="stage-state"></span><span>分段驱动人物口型</span></div><div data-stage-row="compose"><span class="stage-state"></span><span>拼接、混音与导出</span></div><div data-stage-row="upscale" hidden><span class="stage-state"></span><span>AI 高清增强与检查</span></div></div>
+        </section>
+
+        <section class="panel outputs-panel" aria-labelledby="outputs-title"><div class="section-heading"><div><p class="eyebrow">PREVIEW</p><h2 id="outputs-title">预听与成片</h2></div><span class="section-caption" id="output-count">尚无输出</span></div><div id="output-empty" class="output-empty"><div class="preview-symbol" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><strong>等待第一条作品</strong><span>提取音频、转换配音和最终视频<br>会在处理完成后逐一出现在这里</span></div><div id="output-media" hidden></div><div id="enhance-existing" class="enhance-existing" hidden><button id="enhance-button" class="text-button" type="button">增强现有成片 ↗</button><p id="enhance-existing-description" class="generation-note">直接增强本条成片，另建任务；保留原版供比较。</p></div></section>
+
+        <section class="panel logs-panel" aria-labelledby="logs-title"><div class="section-heading compact"><h2 id="logs-title">处理日志</h2><span id="log-count" class="section-caption">0 条</span></div><div id="event-log" class="event-log" role="log" aria-live="polite"><p class="empty-log">任务开始后记录每个处理阶段。</p></div></section>
+      </aside>
+    </div>
+
+    <section class="panel recent-panel" aria-labelledby="recent-title"><div class="section-heading"><div><p class="eyebrow">HISTORY</p><h2 id="recent-title">最近任务</h2></div><button id="history-refresh" class="text-button" type="button">刷新 <span aria-hidden="true">↻</span></button></div><div id="recent-jobs" class="recent-jobs"><p class="history-empty">正在读取任务记录…</p></div></section>
+    <footer class="page-footer"><span>映声 <span class="footer-dot">/</span> 从好内容，到自然表达</span><span>音色转换 + TBDub 口型驱动</span></footer>
+  </main>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

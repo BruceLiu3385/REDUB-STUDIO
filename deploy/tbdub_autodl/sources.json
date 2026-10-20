@@ -1,0 +1,106 @@
+{
+  "release": "TBDub V1.1 Student BF16, two inference steps",
+  "upstream_code": {
+    "url": "https://github.com/TaoLiveAIGC/TBDub",
+    "revision": "19e18e4ba8e2a19e6716cb38110ee2de1dae9bb3",
+    "license": "Apache-2.0"
+  },
+  "official_requirements": "https://raw.githubusercontent.com/TaoLiveAIGC/TBDub/19e18e4ba8e2a19e6716cb38110ee2de1dae9bb3/requirements.txt",
+  "runtime_config": "https://raw.githubusercontent.com/TaoLiveAIGC/TBDub/19e18e4ba8e2a19e6716cb38110ee2de1dae9bb3/runtime_config.py",
+  "model_repositories": [
+    {
+      "id": "TaoLiveAIGC/TBDub",
+      "revision": "b1ac43698859d35bca475301834be9d6133472e2",
+      "files": [
+        "config.json",
+        "null_prompt_emb.pt",
+        "tbdub_student.safetensors"
+      ]
+    },
+    {
+      "id": "KlingTeam/X-Dub",
+      "revision": "c84e9612b7c1160f06ea609882e12efd83cacbbe",
+      "files": [
+        "Wan2.2_VAE.safetensors"
+      ]
+    },
+    {
+      "id": "facebook/hubert-large-ll60k",
+      "revision": "ff022d095678a2995f3c49bab18a96a9e553f782",
+      "files": [
+        "config.json",
+        "preprocessor_config.json",
+        "pytorch_model.bin"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "config.json",
+      "size": 1855,
+      "sha256": "6d4cab684c9173ac024d0e5a26c05d555fc819521ddb43beae83e8c6efdf499e"
+    },
+    {
+      "path": "null_prompt_emb.pt",
+      "size": 4195524,
+      "sha256": "57d6955bbb65afb6f013189edc7db55dd4f55a9964d8d5fc2c77524147386cb1"
+    },
+    {
+      "path": "tbdub_student.safetensors",
+      "size": 12591523048,
+      "sha256": "4e86900f9744b3650bfe58451ae89b3afba758233a3edf5947516268c1ea11e6"
+    },
+    {
+      "path": "Wan2.2_VAE.safetensors",
+      "size": 1409401152,
+      "sha256": "0e913a2ca571c75fcb63385a8edadcca73454af5842596cb1ad11e4142590996"
+    },
+    {
+      "path": "hubert-large-ll60k/config.json",
+      "size": 1600,
+      "sha256": "52e48f7f44bf7f1be327cc3e82368681acf0cc8c5538d757eae9e6685bfe2b16"
+    },
+    {
+      "path": "hubert-large-ll60k/preprocessor_config.json",
+      "size": 212,
+      "sha256": "a2254a5b58f72cd4de3632f8eee64f3f098b7c1402128d2f419e7d00ae13e335"
+    },
+    {
+      "path": "hubert-large-ll60k/pytorch_model.bin",
+      "size": 1261920069,
+      "sha256": "45a299050945479a68cffe2ab7a63fd08931718ba18f05a42dbb86a5164178e0"
+    },
+    {
+      "path": "face_landmarker.task",
+      "size": 3758596,
+      "sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff"
+    }
+  ],
+  "face_landmarker_url": "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+  "revision_policy": "Default code SHA, exact HF revisions, file sizes and full SHA256 are locked to the deployed release. A different existing code SHA or model receipt is refused; no automatic migration or checkout replacement. TBDUB_GIT_REF may select a reviewed immutable code SHA explicitly; model manifest remains locked.",
+  "runtime": {
+    "python": "3.10.16",
+    "torch": "2.9.0+cu128",
+    "torchvision": "0.24.0+cu128",
+    "cuda": "12.8",
+    "imageio_ffmpeg": "0.6.0 (bundled FFmpeg 7.0.2)",
+    "jax": "CPU only",
+    "requirements": "requirements.official-v1.1.txt"
+  },
+  "storage_policy": "Environment, checkpoints, temporary files and caches are under TBDUB_ROOT (default /root/autodl-tmp/tbdub). Exact local_dir file downloads avoid Teacher/full snapshot downloads.",
+  "run_order": [
+    "00_check_hardware.sh",
+    "01_install_environment.sh",
+    "02_download_student.sh",
+    "03_verify_assets.sh",
+    "04_run_sample.sh SOURCE_VIDEO DRIVING_AUDIO 15 sample"
+  ],
+  "deployment_constraints": [
+    "Linux/AutoDL CUDA image with working base-image PyTorch, conda, git and NVIDIA driver compatible with CUDA 12.8 wheels; vanilla Ubuntu requires these prerequisites first.",
+    "Initial hardware checks require >=24GB VRAM, BF16, >=55GiB effective RAM and >=36GiB free data disk before the TBDub environment. Web/voice/separator environments need additional disk.",
+    "Direct Python requirements are pinned; transitive packages are resolved at installation and captured in logs/pip-freeze.txt.",
+    "TBDub code and Student checkpoints are Apache-2.0; auxiliary models and dependencies retain their own terms.",
+    "Installation scripts check imports, CUDA and downloaded assets; a fresh-machine end-to-end installation has not been rerun as part of repository packaging.",
+    "HF_ENDPOINT may be set externally when a trusted mirror is needed; credentials must remain outside this repository."
+  ]
+}

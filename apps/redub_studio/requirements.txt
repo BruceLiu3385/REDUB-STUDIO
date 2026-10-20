@@ -1,0 +1,10 @@
+# API/UI environment only. GPU models run in their separate configured environments.
+# These versions were installed and exercised locally on Python 3.12.
+fastapi==0.143.3
+starlette==1.8.0
+pydantic==2.14.1
+uvicorn==0.54.0
+python-multipart==0.0.32
+# Local API regression tests.
+httpx==0.28.1
+pytest==9.1.1

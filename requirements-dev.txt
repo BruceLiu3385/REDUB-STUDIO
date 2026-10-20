@@ -1,0 +1,4 @@
+# Reuse the application's exercised API/test versions; GPU environments are separate.
+-r apps/redub_studio/requirements.txt
+# Synthetic audio timeline/crossfade tests only; no CUDA dependency is required.
+numpy==2.2.6

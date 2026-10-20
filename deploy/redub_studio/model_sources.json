@@ -1,0 +1,76 @@
+{
+  "default_voice_backend": "chatterbox",
+  "environment_policy": "Web (Python 3.12), TBDub (Python 3.10), voice (Python 3.10) and separator (Python 3.10) use distinct non-overlapping environments. Upscale reuses TBDub CUDA/PyTorch with a vendored RRDBNet; it installs no additional Python packages.",
+  "validation_scope": "Source references and hashes describe the deployed configuration. Installers perform local import/CUDA/model checks when run; packaging did not rerun a complete installation on a new machine. Runtime receipts and pip-freeze are generated on that machine and are not shipped here.",
+  "chatterbox": {
+    "task": "speech-to-speech timbre conversion",
+    "code": {
+      "url": "https://github.com/resemble-ai/chatterbox",
+      "revision": "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+      "package_version": "0.1.7",
+      "license": "MIT"
+    },
+    "weights": {
+      "repo": "ResembleAI/chatterbox",
+      "revision": "5bb1f6ee58e50c3b8d408bc82a6d3740c2db6e18",
+      "file": "s3gen.safetensors",
+      "size": 1056484620,
+      "sha256": "2b78103c654207393955e4900aac14a12de8ef25f4b09424f1ef91941f161d4e",
+      "license": "MIT"
+    },
+    "api": "ChatterboxVC.from_local(checkpoint_dir, device=\"cuda\"); set_target_voice(reference_wav); generate(audio=source_wav)",
+    "sample_rate": 24000,
+    "watermark": "Upstream PerTH audio watermark is retained; resemble-perth==1.0.1 is installed.",
+    "intentional_upstream_metadata_overrides": {
+      "torch": "2.9.0+cu128 instead of upstream 2.6 metadata",
+      "torchaudio": "2.9.0+cu128 instead of upstream 2.6 metadata",
+      "diffusers": "0.36.0 instead of upstream 0.29.0 metadata",
+      "safetensors": "0.7.0 instead of upstream 0.5.3 metadata",
+      "resemble-perth": "Pinned PyPI 1.0.1 instead of a mutable Git master dependency"
+    },
+    "notes": [
+      "Install from the fixed source with --no-deps; upstream metadata conflicts are deliberate. The installer validates CUDA and local checkpoint loading instead of claiming upstream pip check passes.",
+      "setuptools==80.9.0 retains pkg_resources used by PerTH 1.0.1.",
+      "Only the VC s3gen checkpoint is used; no additional TTS checkpoints are downloaded.",
+      "The worker preserves the global sample count, uses bounded context windows and crossfades, and rejects excessive drift; matching duration does not prove identical phoneme timing or perceived speaker/emotion fidelity."
+    ]
+  },
+  "demucs": {
+    "package": "demucs==4.0.1",
+    "code_url": "https://github.com/facebookresearch/demucs/tree/v4.0.1",
+    "license": "MIT",
+    "model": "htdemucs",
+    "file": "955717e8-8726e21a.th",
+    "url": "https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/955717e8-8726e21a.th",
+    "upstream_sha256_prefix": "8726e21a",
+    "sha256": "8726e21a993978c7ba086d3872e7608d7d5bfca646ca4aca459ffda844faa8b4",
+    "runtime": "Python 3.10; torch==2.9.0+cu128; torchaudio==2.9.0+cu128; 44100 Hz stereo",
+    "prefetch": "The installer verifies the full checkpoint SHA256 and loads the model, then writes logs/runtime-check.json. The worker requires that receipt, rechecks the file and refuses inference-time downloads.",
+    "audio_io": "FFmpeg and SoundFile; avoids torchaudio.load/save and TorchCodec.",
+    "background": "Sample-aligned normalized input minus predicted vocals; source-voice residuals can remain."
+  },
+  "real_esrgan": {
+    "release": "v0.2.1",
+    "release_url": "https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.1",
+    "code_license": "BSD-3-Clause",
+    "file": "RealESRGAN_x2plus.pth",
+    "url": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth",
+    "size": 67061725,
+    "sha256": "49fafd45f8fd7aa8d31ab2a22d14d91b536c34494a5cfe31eb5d89c2fa266abb",
+    "architecture": {
+      "implementation": "apps/redub_studio/redub_studio/workers/rrdbnet.py",
+      "origin": "https://github.com/XPixelGroup/BasicSR/blob/master/basicsr/archs/rrdbnet_arch.py",
+      "license": "Apache-2.0",
+      "note": "Adapted architecture is vendored in this repository; no mutable upstream code is fetched during installation. See apps/redub_studio/THIRD_PARTY_LICENSES.txt."
+    },
+    "runtime": "Reuses TBDub torch==2.9.0+cu128; strict params_ema loading with weights_only=True; CUDA FP16 tiled inference.",
+    "behavior": "Conservative per-frame restoration, 70% AI / 30% Lanczos, up to 1080p, no face reconstruction or temporal model. Existing audio packets are copied and verified.",
+    "limitation": "Restoration estimates missing detail; inspect face, teeth, mouth movement and frame-to-frame flicker."
+  },
+  "tbdub": {
+    "metadata": "../tbdub_autodl/sources.json",
+    "code_license": "Apache-2.0",
+    "student_license": "Apache-2.0",
+    "third_party": "Auxiliary models and dependencies retain their individual terms."
+  }
+}
