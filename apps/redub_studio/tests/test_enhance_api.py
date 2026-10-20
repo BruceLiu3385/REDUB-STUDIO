@@ -227,3 +227,34 @@ def test_upscale_readiness_discovers_modules_without_loading_them(tmp_path, monk
     assert seen == ['torch', 'cv2', 'numpy']
     monkeypatch.setattr(server, 'module_present', lambda interpreter, module: module != 'cv2')
     assert server.upscale_ready() is False
+
+
+def test_upscale_readiness_without_python_does_not_access_default_model(monkeypatch):
+    monkeypatch.delenv('REDUB_UPSCALE_MODEL', raising=False)
+    monkeypatch.setattr(server, 'environment_python', lambda variable: None)
+    accessed = []
+
+    def inaccessible_model(path):
+        accessed.append(path)
+        raise PermissionError('default model directory belongs to another user')
+
+    with monkeypatch.context() as local_patch:
+        local_patch.setattr(Path, 'is_file', inaccessible_model)
+        assert server.upscale_ready() is False
+    assert accessed == [], 'An unconfigured optional backend must not inspect its model path'
+
+
+@pytest.mark.parametrize('operation', ['stat', 'access'])
+@pytest.mark.parametrize('error', [PermissionError, OSError])
+def test_upscale_readiness_inaccessible_model_is_not_ready(monkeypatch, operation, error):
+    python = Path('/configured/bin/python')
+    monkeypatch.setenv('REDUB_UPSCALE_MODEL', '/inaccessible/RealESRGAN_x2plus.pth')
+
+    def inaccessible(*args):
+        raise error('model path is unavailable to this user')
+
+    monkeypatch.setattr(server, 'module_present', lambda *args: pytest.fail('Unreadable models must not trigger module discovery'))
+    with monkeypatch.context() as local_patch:
+        local_patch.setattr(Path, 'is_file', inaccessible if operation == 'stat' else lambda path: True)
+        local_patch.setattr(server.os, 'access', inaccessible if operation == 'access' else lambda *args: True)
+        assert server.upscale_ready(python) is False

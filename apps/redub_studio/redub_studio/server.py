@@ -89,11 +89,17 @@ def module_present(python: Path | None, module: str, extra_path: Path | None = N
 
 def upscale_ready(python: Path | None = None) -> bool:
     """Discover the local enhancement setup without importing torch or loading weights."""
-    model = Path(os.environ.get('REDUB_UPSCALE_MODEL',
-                               '/root/autodl-tmp/redub-upscale/RealESRGAN_x2plus.pth')).expanduser()
-    python = python or environment_python('REDUB_TBDUB_ENV')
-    return bool(model.is_file() and os.access(model, os.R_OK) and python
-                and all(module_present(python, name) for name in ('torch', 'cv2', 'numpy')))
+    try:
+        python = python or environment_python('REDUB_TBDUB_ENV')
+        if python is None:
+            return False
+        model = Path(os.environ.get('REDUB_UPSCALE_MODEL',
+                                   '/root/autodl-tmp/redub-upscale/RealESRGAN_x2plus.pth')).expanduser()
+        return bool(model.is_file() and os.access(model, os.R_OK)
+                    and all(module_present(python, name) for name in ('torch', 'cv2', 'numpy')))
+    except OSError:
+        # Optional root-owned model paths may be inaccessible to a regular user.
+        return False
 
 
 def source_revision(folder: Path | None, expected: str | None) -> dict:
